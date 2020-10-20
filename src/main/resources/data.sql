@@ -1,0 +1,8 @@
+insert into role (name) value ('USER')
+insert into role (name) value ('ADMIN')
+insert into user (name, email, username, enabled, password) values ('Ashkan', 'blabla@blalba.de', 'derToaster1412', true, 'blablabla')
+insert into user (name, email, username, enabled, password) values ('Jasmin', 'yadeyade@blalba.de', 'Zockerlady', true, 'yadeyade')
+insert into user (name, email, username, enabled, password) values ('User', 'yadeyade@blalba.de', 'user', true, '$2y$12$MlPwR/nF9ixmD1P3x.ZJNOwBIWIW.xX6ZSLPbmBmzJsD2T6WQjkaa')
+insert into user (name, email, username, enabled, password) values ('Admin', 'yadeyade@blalba.de', 'admin', true, '$2y$12$3GCrY8KRT.zNT9TIBWPjsuf6ieKh8btST0Ytl9TBa5zXCMVBsqlpC')
+insert into user_role (user_id, role_id) value (3,1)
+insert into user_role (user_id, role_id) value (4,2)
