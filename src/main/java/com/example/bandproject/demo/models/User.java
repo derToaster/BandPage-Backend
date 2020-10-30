@@ -1,6 +1,8 @@
 package com.example.bandproject.demo.models;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -26,9 +28,12 @@ public class User {
     private String email;
     @Column(nullable = false, name = "enabled")
     private boolean enabled;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> role;
+//    @JsonManagedReference
+    @OneToMany(mappedBy = "users")
+    private Set<Skills> userSkills = new HashSet<>();
 
     public User() {
     }
@@ -41,7 +46,9 @@ public class User {
         this.email = user.email;
         this.enabled = user.enabled;
         this.role = user.role;
+        this.userSkills = user.userSkills;
     }
+
 
 
     public Long getId() {
@@ -98,5 +105,13 @@ public class User {
 
     public void setRole(Set<Role> role) {
         this.role = role;
+    }
+
+    public Set<Skills> getUserSkills() {
+        return userSkills;
+    }
+
+    public void setUserSkills(Set<Skills> userSkills) {
+        this.userSkills = userSkills;
     }
 }

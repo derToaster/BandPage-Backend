@@ -1,5 +1,6 @@
 package com.example.bandproject.demo;
 
+import com.example.bandproject.demo.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

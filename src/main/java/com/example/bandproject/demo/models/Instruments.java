@@ -1,29 +1,27 @@
 package com.example.bandproject.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import net.bytebuddy.build.ToStringPlugin;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-@ToString
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 public class Instruments {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "instrument_id")
     long id;
     String name;
-
-
-
-
+    @JsonBackReference
+    @OneToMany(mappedBy ="instruments", cascade = CascadeType.MERGE)
+    private Set<Skills> instrumentSkill = new HashSet<>();
 
     public long getId() {
         return id;
@@ -41,4 +39,11 @@ public class Instruments {
         this.name = name;
     }
 
+    public Set<Skills> getInstrumentSkill() {
+        return instrumentSkill;
+    }
+
+    public void setInstrumentSkill(Set<Skills> instrumentSkill) {
+        this.instrumentSkill = instrumentSkill;
+    }
 }
