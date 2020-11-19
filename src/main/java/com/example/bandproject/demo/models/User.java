@@ -1,13 +1,9 @@
 package com.example.bandproject.demo.models;
 
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -17,9 +13,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
-    @Column(name = "name")
-    private String name;
-
     @Column(unique = true, name = "username")
     private String username;
     @Column(length = 100, name = "password")
@@ -28,19 +21,41 @@ public class User {
     private String email;
     @Column(nullable = false, name = "enabled")
     private boolean enabled;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.REFRESH,
+            CascadeType.PERSIST
+    })
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> role;
-//    @JsonManagedReference
+    @Column(nullable = false, name = "isApproved")
+    private boolean isApproved;
+    private String securityQuestion;
+    private String securityAnswer;
+
     @OneToMany(mappedBy = "users")
     private Set<Skills> userSkills = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "owner")
+    private Set<Band> ownership = new HashSet<>();
+
+    @OneToMany(mappedBy = "sender")
+    private Set<Notifications> sent = new HashSet<>();
+
+    @OneToMany(mappedBy = "receiver")
+    private Set<Notifications> received = new HashSet<>();
+
+    @OneToMany(mappedBy = "members")
+    private Set<BandMembership> memberships = new HashSet<>();
+
 
     public User() {
     }
 
     public User(User user) {
         this.id = user.id;
-        this.name = user.name;
         this.username = user.username;
         this.password = user.password;
         this.email = user.email;
@@ -50,21 +65,12 @@ public class User {
     }
 
 
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getUsername() {
@@ -113,5 +119,62 @@ public class User {
 
     public void setUserSkills(Set<Skills> userSkills) {
         this.userSkills = userSkills;
+    }
+
+    public Set<Band> getOwnership() {
+        return ownership;
+    }
+
+    public void setOwnership(Set<Band> ownership) {
+        this.ownership = ownership;
+    }
+
+
+    public Set<Notifications> getSent() {
+        return sent;
+    }
+
+    public void setSent(Set<Notifications> sent) {
+        this.sent = sent;
+    }
+
+    public Set<Notifications> getReceived() {
+        return received;
+    }
+
+    public void setReceived(Set<Notifications> received) {
+        this.received = received;
+    }
+
+    public Set<BandMembership> getMemberships() {
+        return memberships;
+    }
+
+    public void setMemberships(Set<BandMembership> memberships) {
+        this.memberships = memberships;
+    }
+
+    public String getSecurityQuestion() {
+        return securityQuestion;
+    }
+
+    public void setSecurityQuestion(String securityQuestion) {
+        this.securityQuestion = securityQuestion;
+    }
+
+    public String getSecurityAnswer() {
+        return securityAnswer;
+    }
+
+    public void setSecurityAnswer(String securityAnswer) {
+        this.securityAnswer = securityAnswer;
+    }
+
+    public Boolean getApproved() {
+        return isApproved;
+    }
+
+    public void setApproved(Boolean approved) {
+        isApproved = approved;
     }
 }

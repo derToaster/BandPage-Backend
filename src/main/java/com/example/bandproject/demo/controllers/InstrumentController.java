@@ -3,7 +3,6 @@ package com.example.bandproject.demo.controllers;
 import com.example.bandproject.demo.models.Instruments;
 import com.example.bandproject.demo.repositories.InstrumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

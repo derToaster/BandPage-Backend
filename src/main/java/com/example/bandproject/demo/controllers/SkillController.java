@@ -1,11 +1,7 @@
 package com.example.bandproject.demo.controllers;
 
 
-import com.example.bandproject.demo.models.Instruments;
-import com.example.bandproject.demo.models.SkillLevels;
-import com.example.bandproject.demo.models.Skills;
-import com.example.bandproject.demo.models.User;
-import com.example.bandproject.demo.models.AddSkill;
+import com.example.bandproject.demo.models.*;
 import com.example.bandproject.demo.repositories.InstrumentRepository;
 import com.example.bandproject.demo.repositories.SkillLevelRepository;
 import com.example.bandproject.demo.repositories.SkillRepository;
@@ -13,7 +9,6 @@ import com.example.bandproject.demo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.sound.midi.Instrument;
 import java.util.List;
 
 @RestController

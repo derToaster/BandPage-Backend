@@ -3,24 +3,18 @@ package com.example.bandproject.demo.controllers;
 import com.example.bandproject.demo.models.*;
 import com.example.bandproject.demo.repositories.RoleRepository;
 import com.example.bandproject.demo.repositories.UserRepository;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.beans.BeanUtils;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.relation.RoleInfo;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -35,34 +29,28 @@ public class UserController {
     private RoleRepository roleRepository;
 
     @GetMapping("/")
-    public Page<User> getUser(Pageable pageable){
+    public Page<User> getUser(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
-//    @GetMapping
-//    public Page<User> getUsers(@RequestParam(defaultValue = "id") String sortParam,
-//                               @RequestParam(defaultValue = "true") boolean sortDirection,
-//                               @RequestParam(defaultValue = "0") Integer page,
-//                               @RequestParam(defaultValue = "false") boolean showAll,
-//                               @RequestParam(defaultValue = "4") Integer itemsPerList,
-//                               @Param("keyword") String keyword) {
-//        var direction = sortDirection ? Sort.Direction.ASC : Sort.Direction.DESC;
-//        var itemAmount = showAll ? 10000 : itemsPerList;
-//
-//        return userRepository.search(keyword, PageRequest.of(page, itemAmount, Sort.by(direction, sortParam)));
-//
-//    }
+    @GetMapping("/search/{keyword}")
+    public Page<User> search(@PathVariable("keyword") String keyword, Pageable pageable) {
+        return userRepository.search(keyword, pageable);
+    }
+
 
     @PostMapping
     public void create(@RequestBody User user) {
         userRepository.save(user);
 
     }
+
     @GetMapping("/{id}")
-    public User getUserbyId(@PathVariable("id") long id){
+    public User getUserbyId(@PathVariable("id") long id) {
         return userRepository.findById(id).get();
 
     }
+
     @DeleteMapping("/{id}")
     public void deleteOne(@PathVariable("id") long id) {
         userRepository.deleteById(id);
@@ -72,8 +60,9 @@ public class UserController {
     public Page<User> showPage(@RequestParam(defaultValue = "0") int page) {
         return userRepository.findAll(PageRequest.of(page, 4));
     }
+
     @PutMapping
-    public void updateUser(@RequestBody UpdateUser user){
+    public void updateUser(@RequestBody UpdateUser user) {
         Optional<User> currentUser = userRepository.findById(user.getId());
         currentUser.get().setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         currentUser.get().setEmail(user.getEmail());
@@ -81,50 +70,89 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public List<User> getAll(){
+    public List<User> getAll() {
         return userRepository.findAll();
     }
 
     @PostMapping("/checkpw")
-    public boolean checkPassword(@RequestBody CheckPassword checkPassword){
+    public boolean checkPassword(@RequestBody CheckPassword checkPassword) {
 
-       User user = userRepository.findById(checkPassword.getId()).get();
-           System.out.println("frontend PW: " + bCryptPasswordEncoder.encode( checkPassword.getPassword()));
-           System.out.println("backend PW: " + user.getPassword());
-       if (bCryptPasswordEncoder.matches(checkPassword.getPassword(), user.getPassword())){
-           return true;
-       }else   {
-           return false;
-       }
+        User user = userRepository.findById(checkPassword.getId()).get();
+        System.out.println("frontend PW: " + bCryptPasswordEncoder.encode(checkPassword.getPassword()));
+        System.out.println("backend PW: " + user.getPassword());
+        if (bCryptPasswordEncoder.matches(checkPassword.getPassword(), user.getPassword())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
     @PostMapping("/add")
-    public User addUser(@RequestBody User user){
+    public User addUser(@RequestBody User user) {
 
-        System.out.println( "new Userpassword " + user.getPassword());
+        System.out.println("new Userpassword " + user.getPassword());
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        System.out.println( "new hashed Userpassword " + user.getPassword());
+        System.out.println("new hashed Userpassword " + user.getPassword());
+        user.setSecurityAnswer(bCryptPasswordEncoder.encode(user.getSecurityAnswer()));
+        user.setApproved(false);
         Set<Role> role = new HashSet<>();
         role.add(roleRepository.findById(1L).get());
         user.setRole(role);
         user.setEnabled(true);
         return userRepository.save(user);
     }
+
     @GetMapping("/get/{username}")
-    public User getByUsername(@PathVariable("username") String username){
-        return userRepository.findUserByUsername(username).get();
+    public User getByUsername(@PathVariable("username") String username) throws NotFoundException {
+        if (userRepository.findUserByUsername(username).isPresent()) {
+            return userRepository.findUserByUsername(username).get();
+        } else {
+            throw new NotFoundException("User with username " + username + "not found");
+        }
     }
+
     @GetMapping("/admin")
-    public String admin(){
+    public String admin() {
         return "Admin";
     }
+
     @GetMapping("/user")
-    public String user(){
+    public String user() {
         return "user";
     }
 
+    @PostMapping("/verifyanswer")
+    public boolean verifyAnswer(@RequestBody VerifySecurityAnswer verifySecurityAnswer) {
+        User user = userRepository.findById(verifySecurityAnswer.getUserId()).get();
+        return bCryptPasswordEncoder.matches(verifySecurityAnswer.getAnswer(), user.getSecurityAnswer());
+    }
 
+    @PostMapping("/approve/{userId}")
+    public String approveUser(@PathVariable("userId") Long userId) {
+        User user = userRepository.findById(userId).get();
+        user.setApproved(true);
+        userRepository.save(user);
+        return user.getUsername() + "was approved";
+    }
 
+    @GetMapping("/approved/{username}")
+    public boolean isApproved(@PathVariable("username") String username) {
+        User user = userRepository.findUserByUsername(username).get();
+        return user.getApproved();
+    }
 
+    @GetMapping("/isAdmin/{username}")
+    public boolean isAdmin(@PathVariable("username") String username) {
+        User user = userRepository.findUserByUsername(username).get();
+        for (Role role : user.getRole()) {
+            if (role.getName().equals("ADMIN")) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
+
+
+

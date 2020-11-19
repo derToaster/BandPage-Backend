@@ -11,7 +11,7 @@ public class Role {
     Long id;
     String name;
 
-    @ManyToMany(mappedBy = "role")
+    @ManyToMany
     private Set<User> users;
 
 

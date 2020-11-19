@@ -21,9 +21,9 @@ public class Skills {
     @JoinColumn(name = "instrument_id")
     private Instruments instruments;
 
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User users;
 
 //    @JsonManagedReference
