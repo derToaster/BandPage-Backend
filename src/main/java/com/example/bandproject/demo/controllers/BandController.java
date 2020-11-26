@@ -1,9 +1,8 @@
 package com.example.bandproject.demo.controllers;
 
 import com.example.bandproject.demo.models.Band;
-import com.example.bandproject.demo.models.User;
 import com.example.bandproject.demo.repositories.BandRepository;
-import com.example.bandproject.demo.repositories.UserRepository;
+import com.example.bandproject.demo.services.BandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,48 +15,52 @@ import java.util.List;
 @RequestMapping("/api/v1/bands")
 public class BandController {
 
-    @Autowired
-    private BandRepository bandRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private BandService bandService;
 
     @PostMapping
     public Band createBand(@RequestBody Band band) {
-        return bandRepository.save(band);
+        return bandService.createBand(band);
     }
 
     @DeleteMapping("/{band}")
     public String deleteBand(@PathVariable("band") Long bandId) {
-        bandRepository.deleteById(bandId);
-        return "Band Deleted";
+        return bandService.deleteBand(bandId);
     }
 
     @GetMapping("/")
     public Page<Band> getAllBands(Pageable pageable) {
 
-        return bandRepository.findAll(pageable);
+        return bandService.getAllBands(pageable);
     }
 
     @GetMapping("/bandowners/{owner}")
-    public List<Band> getAllBandsByOwners(@PathVariable("owner") Long ownerId){
-        return bandRepository.findBandsByOwnerId(ownerId);
+    public List<Band> getAllBandsByOwners(@PathVariable("owner") Long ownerId) {
+        return bandService.getAllBandsByOwners(ownerId);
     }
+
     @GetMapping("{id}")
-    public Band getBandById(@PathVariable("id") Long id){
-        return bandRepository.findById(id).get();
+    public Band getBandById(@PathVariable("id") Long id) {
+        return bandService.getBandbyId(id);
     }
 
     @GetMapping("/search/{keyword}")
     public Page<Band> search(@PathVariable("keyword") String keyword, Pageable pageable) {
-        return bandRepository.findBandsByNameContaining(keyword, pageable);
+        return bandService.search(pageable, keyword);
     }
-    @GetMapping("/isSoeren")
-    public List<Band> soerenBands(){
-        List<Band> sörenBands = bandRepository.findBandsByOwnerUsernameContaining("sör");
-        List<Band> soerenBands = bandRepository.findBandsByOwnerUsernameContaining("soer");
 
-        sörenBands.addAll(soerenBands);
-        return sörenBands;
+
+    @GetMapping("/isSoeren")
+    public List<Band> soerenBands() {
+
+        return bandService.soerenBands();
+
+    }
+
+
+    @DeleteMapping("/isSoeren")
+    public String deleteSoeren() {
+       return bandService.deleteSören();
     }
 }

@@ -4,6 +4,7 @@ import com.example.bandproject.demo.models.EmailCfg;
 import com.example.bandproject.demo.models.Mail;
 import com.example.bandproject.demo.models.User;
 import com.example.bandproject.demo.repositories.UserRepository;
+import com.example.bandproject.demo.services.MailService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -22,76 +23,24 @@ import java.util.Random;
 @RequestMapping("mail")
 public class MailController {
 
-    @Autowired
-    private EmailCfg emailCfg;
+
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private MailService mailService;
 
     @PostMapping
     public void sendMail(@RequestBody Mail mail,
                          BindingResult bindingResult) throws ValidationException {
-        if (bindingResult.hasErrors()){
-            throw new ValidationException("Mail not Valid");
-        }
-        JavaMailSenderImpl mailSender = getJavaMailSender();
 
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom("info@bandpage.com");
-        mailMessage.setTo(mail.getEmail());
-        mailMessage.setSubject(mail.getSubject());
-        mailMessage.setText(mail.getMessage());
-
-        mailSender.send(mailMessage);
-
+        mailService.sendMail(mail, bindingResult);
 
     }
 
-    private JavaMailSenderImpl getJavaMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(emailCfg.getHost());
-        mailSender.setPort(emailCfg.getPort());
-        mailSender.setUsername(emailCfg.getUsername());
-        mailSender.setPassword(emailCfg.getPassword());
-        return mailSender;
-    }
 
     @PostMapping("/resetpassword")
-    public void resetPassword(@RequestBody Mail mail, BindingResult bindingResult) throws ValidationException, NotFoundException{
-        if (bindingResult.hasErrors()){
-            throw new ValidationException("Mail not Valid");
-        }
-        if (userRepository.findUserByUsername(mail.getName()).isPresent()) {
-            User user = userRepository.findUserByUsername(mail.getName()).get();
-            String newPassword = alphaNumericString(24);
-            user.setPassword(bCryptPasswordEncoder.encode(newPassword));
-            userRepository.save(user);
-
-            JavaMailSenderImpl mailSender = getJavaMailSender();
-
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setFrom("info@bandpage.com");
-            mailMessage.setTo(mail.getEmail());
-            mailMessage.setSubject(mail.getSubject());
-            mailMessage.setText(mail.getMessage() + newPassword);
-
-            mailSender.send(mailMessage);
-        }else {
-            throw new NotFoundException("The user does not Exist");
-        }
+    public void resetPassword(@RequestBody Mail mail, BindingResult bindingResult) throws ValidationException, NotFoundException {
+        mailService.resetPassword(mail, bindingResult);
     }
 
-    public static String alphaNumericString(int len) {
-        String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        Random rnd = new Random();
 
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
-            sb.append(AB.charAt(rnd.nextInt(AB.length())));
-        }
-        return sb.toString();
-    }
 }

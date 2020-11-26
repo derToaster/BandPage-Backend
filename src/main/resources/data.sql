@@ -9,6 +9,7 @@ insert into user (email, username,securityQuestion, securityAnswer, enabled, isA
 insert into user (email, username,securityQuestion, securityAnswer, enabled, isApproved, password) values ('yadeyade@blalba.de', 'Soerschaden','Are you Stupid ?','$2y$12$N0OWmO8eAhQRTkiU8UGrKOQjGFHqzPH.W0S2Vr.IChV/VY86hLiSC', true, true,  '$2y$12$rYK0KIoyzeXBntRRoy6Mf.Yk0.e9fkj75ZSx6GdHT5LgisJn4Ug2O')
 insert into user_role (user_id, role_id) value (3,1)
 insert into user_role (user_id, role_id) value (4,2)
+insert into user_role (user_id, role_id) value (4,1)
 insert into user_role (user_id, role_id) value (5,2)
 insert into skilllevels(skilllevel) values('Noob')
 insert into skilllevels(skilllevel) values('Intermediate')
