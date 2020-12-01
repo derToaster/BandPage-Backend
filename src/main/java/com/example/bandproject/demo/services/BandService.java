@@ -43,21 +43,31 @@ public class BandService {
         return bandRepository.findBandsByNameContaining(keyword, pageable);
     }
 
-    public List<Band> soerenBands() {
+    public List<Band> soerenBands() throws NullPointerException{
         List<Band> sörenBands = bandRepository.findBandsByOwnerUsernameContaining("sör");
         List<Band> soerenBands = bandRepository.findBandsByOwnerUsernameContaining("soer");
 
+
         sörenBands.addAll(soerenBands);
-        return sörenBands;
+        if (sörenBands.isEmpty()){
+
+            throw new NullPointerException("Array is empty");
+        }else {
+            return sörenBands;
+        }
     }
 
-    public String deleteSören() {
+    public String deleteSören() throws NullPointerException {
         List<Band> sörenBands = bandRepository.findBandsByOwnerUsernameContaining("sör");
         List<Band> soerenBands = bandRepository.findBandsByOwnerUsernameContaining("soer");
 
         sörenBands.addAll(soerenBands);
-        bandRepository.deleteInBatch(sörenBands);
-        return "All Sörenbands Deleted";
+        if (sörenBands.isEmpty()) {
+            throw new NullPointerException("Array is Empty");
+        } else {
+            bandRepository.deleteInBatch(sörenBands);
+            return "All Sörenbands Deleted";
+        }
     }
 
 }

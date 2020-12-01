@@ -22,7 +22,7 @@ public class SkillLevels {
 
 
     @JsonBackReference
-    @OneToMany(mappedBy ="skillLevels", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy ="skillLevels", fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
     private Set<Skills> skillLevelSkills = new HashSet<>();
 
     public Long getId() {

@@ -21,12 +21,7 @@ public class User {
     private String email;
     @Column(nullable = false, name = "enabled")
     private boolean enabled;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.REFRESH,
-            CascadeType.PERSIST
-    })
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> role;
     @Column(nullable = false, name = "isApproved")
@@ -64,6 +59,12 @@ public class User {
         this.userSkills = user.userSkills;
     }
 
+    public User(String username, String password, String securityQuestion, String securityAnswer) {
+        this.username = username;
+        this.password = password;
+        this.securityQuestion = securityQuestion;
+        this.securityAnswer = securityAnswer;
+    }
 
     public Long getId() {
         return id;

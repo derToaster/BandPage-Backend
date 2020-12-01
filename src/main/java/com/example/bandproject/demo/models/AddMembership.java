@@ -4,6 +4,14 @@ public class AddMembership {
     Long memberId;
     Long bandId;
 
+    public AddMembership(Long memberId, Long bandId) {
+        this.memberId = memberId;
+        this.bandId = bandId;
+    }
+
+    public AddMembership() {
+    }
+
     public Long getMemberId() {
         return memberId;
     }

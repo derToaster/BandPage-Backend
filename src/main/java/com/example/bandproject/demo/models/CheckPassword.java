@@ -4,6 +4,11 @@ public class CheckPassword {
     Long id;
     String password;
 
+    public CheckPassword(Long id, String password) {
+        this.id = id;
+        this.password = password;
+    }
+
     public Long getId() {
         return id;
     }

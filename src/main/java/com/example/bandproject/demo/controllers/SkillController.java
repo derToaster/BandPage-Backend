@@ -8,6 +8,7 @@ import com.example.bandproject.demo.repositories.SkillLevelRepository;
 import com.example.bandproject.demo.repositories.SkillRepository;
 import com.example.bandproject.demo.repositories.UserRepository;
 import com.example.bandproject.demo.services.SkillService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class SkillController {
 
 
     @PostMapping
-    public void newSkill(@RequestBody AddSkill addSkill) {
+    public void newSkill(@RequestBody AddSkill addSkill) throws NotFoundException {
         skillService.newSkill(addSkill);
     }
 

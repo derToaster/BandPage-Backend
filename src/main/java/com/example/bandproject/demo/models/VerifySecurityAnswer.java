@@ -4,6 +4,11 @@ public class VerifySecurityAnswer {
     Long userId;
     String answer;
 
+    public VerifySecurityAnswer(Long userId, String answer) {
+        this.userId = userId;
+        this.answer = answer;
+    }
+
     public Long getUserId() {
         return userId;
     }

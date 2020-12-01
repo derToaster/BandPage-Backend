@@ -27,7 +27,7 @@ public class Skills {
     private User users;
 
 //    @JsonManagedReference
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "skilllevel_id")
     private SkillLevels skillLevels;
 

@@ -5,6 +5,12 @@ public class AddSkill {
     Long userId;
     Long skillLevelId;
 
+    public AddSkill(Long instrumentId, Long userId, Long skillLevelId) {
+        this.instrumentId = instrumentId;
+        this.userId = userId;
+        this.skillLevelId = skillLevelId;
+    }
+
     public Long getInstrumentId() {
         return instrumentId;
     }

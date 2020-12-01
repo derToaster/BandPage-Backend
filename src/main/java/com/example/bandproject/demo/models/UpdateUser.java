@@ -5,6 +5,12 @@ public class UpdateUser {
     String password;
     String email;
 
+    public UpdateUser(Long id, String password, String email) {
+        this.id = id;
+        this.password = password;
+        this.email = email;
+    }
+
     public Long getId() {
         return id;
     }

@@ -5,6 +5,7 @@ import com.example.bandproject.demo.repositories.InstrumentRepository;
 import com.example.bandproject.demo.repositories.SkillLevelRepository;
 import com.example.bandproject.demo.repositories.SkillRepository;
 import com.example.bandproject.demo.repositories.UserRepository;
+import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,14 +32,21 @@ public class SkillService {
         return skillLevelRepository.findAll();
     }
 
-    public void newSkill(AddSkill addSkill) {
-        User user = userRepository.findById(addSkill.getUserId()).get();
-        Instruments instrument = instrumentRepository.findById(addSkill.getInstrumentId()).get();
-        SkillLevels skillLevels = skillLevelRepository.findById(addSkill.getSkillLevelId()).get();
+    public Skills newSkill(AddSkill addSkill) throws NotFoundException {
+        if (userRepository.findById(addSkill.getUserId()).isPresent()
+                && instrumentRepository.findById(addSkill.getInstrumentId()).isPresent()
+                && skillLevelRepository.findById(addSkill.getSkillLevelId()).isPresent()) {
 
-        Skills skills = new Skills(instrument, user, skillLevels);
+            User user = userRepository.findById(addSkill.getUserId()).get();
+            Instruments instrument = instrumentRepository.findById(addSkill.getInstrumentId()).get();
+            SkillLevels skillLevels = skillLevelRepository.findById(addSkill.getSkillLevelId()).get();
 
-        skillRepository.save(skills);
+            Skills skills = new Skills(instrument, user, skillLevels);
+
+            return skillRepository.save(skills);
+        }else {
+            throw new NotFoundException("User not found");
+        }
     }
 
     public void deleteOneSkill(Long skillId) {

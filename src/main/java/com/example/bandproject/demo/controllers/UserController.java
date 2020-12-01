@@ -61,7 +61,7 @@ public class UserController {
     }
 
     @PutMapping
-    public void updateUser(@RequestBody UpdateUser user) {
+    public void updateUser(@RequestBody UpdateUser user) throws NotFoundException {
         userService.updateUser(user);
     }
 
@@ -71,7 +71,7 @@ public class UserController {
     }
 
     @PostMapping("/checkpw")
-    public boolean checkPassword(@RequestBody CheckPassword checkPassword) {
+    public boolean checkPassword(@RequestBody CheckPassword checkPassword) throws NotFoundException {
 
         return userService.checkPw(checkPassword);
     }
@@ -84,7 +84,7 @@ public class UserController {
 
     @GetMapping("/get/{username}")
     public User getByUsername(@PathVariable("username") String username) throws NotFoundException {
-        return userService.geUserByUsername(username);
+        return userService.getUserByUsername(username).get();
     }
 
     @GetMapping("/admin")
@@ -98,22 +98,22 @@ public class UserController {
     }
 
     @PostMapping("/verifyanswer")
-    public boolean verifyAnswer(@RequestBody VerifySecurityAnswer verifySecurityAnswer) {
+    public boolean verifyAnswer(@RequestBody VerifySecurityAnswer verifySecurityAnswer) throws NotFoundException {
         return userService.verifyAnswer(verifySecurityAnswer);
     }
 
     @PostMapping("/approve/{userId}")
-    public String approveUser(@PathVariable("userId") Long userId) {
+    public String approveUser(@PathVariable("userId") Long userId) throws NotFoundException {
         return userService.approveUser(userId);
     }
 
     @GetMapping("/approved/{username}")
-    public boolean isApproved(@PathVariable("username") String username) {
+    public boolean isApproved(@PathVariable("username") String username) throws NotFoundException {
         return userService.isApproved(username);
     }
 
     @GetMapping("/isAdmin/{username}")
-    public boolean isAdmin(@PathVariable("username") String username) {
+    public boolean isAdmin(@PathVariable("username") String username) throws NotFoundException {
         return userService.isAdmin(username);
     }
     @GetMapping("/isRegistered/{username}")

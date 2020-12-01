@@ -28,6 +28,15 @@ public class Band {
     @OneToOne
     Notifications bandInvites;
 
+    public Band(String name, String genre, Integer bandSize, boolean isSoeren) {
+        this.name = name;
+        this.genre = genre;
+        this.bandSize = bandSize;
+        this.isSoeren = isSoeren;
+    }
+
+    public Band() {
+    }
 
     public Long getId() {
         return id;

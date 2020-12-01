@@ -6,6 +6,7 @@ import com.example.bandproject.demo.repositories.BandMembershipRepository;
 import com.example.bandproject.demo.repositories.BandRepository;
 import com.example.bandproject.demo.repositories.UserRepository;
 import com.example.bandproject.demo.services.BandMembershipService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +20,12 @@ public class BandMembershipController {
     BandMembershipService bandMembershipService;
 
     @PostMapping
-    public void newBandMembership(@RequestBody AddMembership addMembership) {
+    public void newBandMembership(@RequestBody AddMembership addMembership) throws NotFoundException {
         bandMembershipService.newMembership(addMembership);
     }
 
     @DeleteMapping("{membershipId}")
-    public void deleteMembership(@PathVariable(name = "membershipId") Long membershipId) {
+    public void deleteMembership(@PathVariable(name = "membershipId") Long membershipId) throws NotFoundException {
         bandMembershipService.deleteMembership(membershipId);
     }
 
