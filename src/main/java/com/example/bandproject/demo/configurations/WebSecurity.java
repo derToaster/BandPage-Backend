@@ -56,9 +56,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), this.userRepository))
                 .authorizeRequests()
                 // configure access rules
-                .antMatchers("/mail/resetpassword", "/api/v1/users/approve",
-                        "/api/v1/users/approved").hasRole("ADMIN")
-                .antMatchers("/api/v1/bands/").permitAll()
+                .antMatchers("/mail/resetpassword", "/api/v1/users/approve/**",
+                        "/api/v1/users/approved/**").hasRole("ADMIN")
                 .antMatchers("/api/v1/users/add").permitAll()
                 .antMatchers("/api/v1/users/user").hasRole("USER")
                 .antMatchers("/api/v1/users/admin").hasRole("ADMIN")

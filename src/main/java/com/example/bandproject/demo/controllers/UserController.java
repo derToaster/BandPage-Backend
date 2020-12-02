@@ -55,10 +55,6 @@ public class UserController {
         userRepository.deleteById(id);
     }
 
-    @GetMapping("/page")
-    public Page<User> showPage(@RequestParam(defaultValue = "0") int page) {
-        return userRepository.findAll(PageRequest.of(page, 4));
-    }
 
     @PutMapping
     public void updateUser(@RequestBody UpdateUser user) throws NotFoundException {
