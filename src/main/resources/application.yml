@@ -5,7 +5,8 @@
 #spring.datasource.initialization-mode=always
 #spring.datasource.data=classpath:data.sql
 #spring.jpa.show-sql=true
-
+server:
+  port: 8090
 spring:
   mail:
     host: smtp.mailtrap.io
